@@ -1,0 +1,44 @@
+---
+title: "TP bourdon"
+output:
+  pdf_document: default
+  html_document: defaul
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+SciViews::R
+```
+
+
+```{r read}
+colonie <- read("bourdonR.xlsx")
+```
+
+```{r mutate larve}
+colonie %>.% 
+  filter(., Type == "larve") %>.%
+  select(., -ITD) %>.% 
+  mutate(., t_m = taille/masse) -> colonie_larve
+```
+
+```{r dénombrement larve}
+chart(data = colonie_larve, ~t_m)+ 
+  geom_histogram(bins = 50) +
+  ylab("Dénombrement") +
+  xlab("Rapport taille-masse")
+```
+
+```{r mutate ouvrière}
+colonie %>.% 
+  filter(., Type == "ouvrière") %>.%
+  select(., -taille) %>.% 
+  mutate(., t_m = ITD/masse) -> colonie_ouvrière
+```
+
+```{r dénombrement ouvrière}
+chart(data = colonie_ouvrière, ~t_m)+ 
+  geom_histogram(bins = 50) +
+  ylab("Dénombrement") +
+  xlab("Rapport taille-masse")
+```
