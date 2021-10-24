@@ -1,8 +1,5 @@
 ---
 title: "TP bourdon"
-output:
-  pdf_document: default
-  html_document: defaul
 ---
 
 ```{r setup, include=FALSE}
@@ -19,26 +16,27 @@ colonie <- read("bourdonR.xlsx")
 colonie %>.% 
   filter(., Type == "larve") %>.%
   select(., -ITD) %>.% 
-  mutate(., t_m = taille/masse) -> colonie_larve
+  mutate(., t_m = taille/masse) %>.% 
+  labelise(., self = FALSE, label = list(t_m = "Rapport largeur-poids"), units = list(t_m = "mm/g"))-> colonie_larve
 ```
 
 ```{r dénombrement larve}
 chart(data = colonie_larve, ~t_m)+ 
-  geom_histogram(bins = 50) +
-  ylab("Dénombrement") +
-  xlab("Rapport taille-masse")
+  geom_histogram(bins = 100) +
+  ylab("Dénombrement")
 ```
 
 ```{r mutate ouvrière}
 colonie %>.% 
   filter(., Type == "ouvrière") %>.%
   select(., -taille) %>.% 
-  mutate(., t_m = ITD/masse) -> colonie_ouvrière
+  mutate(., t_m = ITD/masse) %>.% 
+  labelise(., self = FALSE, label = list(t_m = "Rapport ITD-poids"), units = list(t_m = "mm/g"))-> colonie_ouvrière
 ```
 
 ```{r dénombrement ouvrière}
 chart(data = colonie_ouvrière, ~t_m)+ 
-  geom_histogram(bins = 50) +
-  ylab("Dénombrement") +
-  xlab("Rapport taille-masse")
+  geom_histogram(bins = 100) +
+  ylab("Dénombrement") 
 ```
+
